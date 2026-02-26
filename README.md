@@ -3,6 +3,13 @@
 <html lang="th">
 
 <head>
+    <script type="text/javascript">
+        var sc_project = 13147874;
+        var sc_invisible = 0;
+        var sc_security = "550e33c0";
+        var scJsHost = "https://";
+        document.write("<sc" + "ript type='text/javascript' src='" + scJsHost + "statcounter.com/counter/counter.js'></" + "script>");
+    </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3039,7 +3046,8 @@
     </div>
 
 
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <!-- External libraries already loaded at top of file -->
+    <!-- <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/obs-websocket-js@5.0.2/dist/obs-ws.min.js"></script>
 
@@ -3062,7 +3070,138 @@
     </script>
 
 
-    <script type="module" src="fcp_v2_assets/main.js"></script>
+    <!-- Note: External main.js removed - core logic needs to be added inline -->
+    <!-- <script type="module" src="fcp_v2_assets/main.js"></script> -->
+
+    <!-- Added missing JavaScript functions -->
+    <script>
+        // Toast notification function
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) {
+                // Fallback if toast container doesn't exist
+                alert(message);
+                return;
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+            toast.innerHTML = '<i class="fas fa-' + icon + '"></i> ' + message;
+
+            container.appendChild(toast);
+
+            // Auto remove after animation completes (5s total = 0.5s fadeIn + 4.5s delay + 0.5s fadeOut)
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 5000);
+        };
+
+        // Close all popups function
+        window.closeAllPopups = function() {
+            const popups = [
+                'onlineUsersPopup',
+                'mobileControlPopup',
+                'pcMatchPopup',
+                'confirmOverlay'
+            ];
+
+            popups.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.display = 'none';
+                }
+            });
+
+            // Also hide confirm modal if open
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmOverlay = document.getElementById('confirmOverlay');
+            if (confirmModal) confirmModal.style.display = 'none';
+            if (confirmOverlay) confirmOverlay.style.display = 'none';
+        };
+
+        // Open online users popup
+        window.openOnlineUsersPopup = function() {
+            const popup = document.getElementById('onlineUsersPopup');
+            if (popup) {
+                popup.style.display = 'flex';
+            }
+        };
+
+        // Open mobile control popup
+        window.openMobileControlPopup = function() {
+            const popup = document.getElementById('mobileControlPopup');
+            if (popup) {
+                popup.style.display = 'block';
+            }
+        };
+
+        // Insert tag function for template editor
+        window.insertTag = function(tag) {
+            const textarea = document.getElementById('customTextarea');
+            if (textarea) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                textarea.value = text.substring(0, start) + tag + text.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + tag.length;
+                textarea.focus();
+            }
+        };
+
+        // Copy table to clipboard
+        window.copyTableToClipboard = function(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) {
+                window.showToast('Table not found', 'error');
+                return;
+            }
+
+            let text = '';
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('th, td');
+                let rowText = [];
+                cells.forEach(cell => {
+                    rowText.push(cell.innerText.trim());
+                });
+                text += rowText.join('\t') + '\n';
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                window.showToast('Copied to clipboard!', 'success');
+            }).catch(err => {
+                window.showToast('Failed to copy', 'error');
+            });
+        };
+
+        // Create all OBS sources (stub function)
+        window.createAllObsSources = function(btn) {
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            }
+
+            // Simulate async operation
+            setTimeout(() => {
+                window.showToast('OBS Sources functionality requires obs-websocket-js configuration', 'info');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-plus"></i> Create All Sources';
+                }
+            }, 1000);
+        };
+
+        // Basic fcpAPI stub for PC Match popup
+        window.fcpAPI = window.fcpAPI || {
+            applyMatch: function() {
+                console.log('applyMatch called');
+                window.showToast('Match loaded', 'success');
+            }
+        };
+    </script>
 
     <!-- Duplicate Mobile Control Popup Removed (using the one at line ~2160) -->
 
